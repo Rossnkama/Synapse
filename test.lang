@@ -1,0 +1,5 @@
+if (name == name) {
+    out "Hello world";
+} else {
+    out 1 + 1;
+}
