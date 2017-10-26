@@ -1,6 +1,5 @@
-import javax.xml.stream.FactoryConfigurationError;
 import java.io.BufferedReader;  import java.io.FileReader;  import java.io.IOException;
-import java.util.ArrayList;
+import java.util.ArrayList;     import java.util.List;
 
 public class Lexer {
 
@@ -31,10 +30,10 @@ public class Lexer {
     // Turning the file we read into tokens
     private static String tokeniser(String opened_file) {
 
-        ArrayList<String> keyWords = new ArrayList<String>();
-        keyWords.add("print"); keyWords.add("if"); keyWords.add("def"); keyWords.add("for");
+        List keyWords = new ArrayList<>();
+        keyWords.add("out"); keyWords.add("if"); keyWords.add("def"); keyWords.add("for");
         String builder = "";
-        ArrayList<String> tokens = new ArrayList<String>();
+        List tokens = new ArrayList<>();
         boolean stringState = false;
         String string = "";
 
@@ -42,12 +41,19 @@ public class Lexer {
 
             builder += opened_file.charAt(i);
 
-            if (opened_file.charAt(i) == '"') {
+            char chr = opened_file.charAt(i);
+
+            if (chr == '"') {
                 if (stringState == false) {
+
                     stringState = true;
-                } else if (stringState == true) {
-                    string += opened_file.charAt(i);
+
+                } else {
+                    // If stringState is true...
+                    string += chr;
                     stringState = false;
+                    tokens.add(string); string = ""; builder = "";
+
                 }
             }
 
@@ -63,8 +69,9 @@ public class Lexer {
     }
 
     public static void main(String[]args) throws Exception{
+
         System.out.println( tokeniser(openFile("test.lang")) );
+
     }
+
 }
-
-
