@@ -30,6 +30,7 @@ public class Lexer {
     // Turning the file we read into tokens
     private static List tokeniser(String opened_file) {
 
+        // To find strings
         List keyWords = new ArrayList<>();
         keyWords.add("out"); keyWords.add("if"); keyWords.add("def"); keyWords.add("for");
         String builder = "";
@@ -38,27 +39,36 @@ public class Lexer {
         String string = "";
 
         for (int i = 0; i < opened_file.length(); i++) {
-
-            builder += opened_file.charAt(i);
+            // Our reader which can identify the character at any time.
             char chr = opened_file.charAt(i);
-
-            if (chr == '"') {
-                // If stringState is true...
-                if (stringState) {
-                    stringState = false;
-                } else {
-                    stringState = true;
-                }
-            } if (stringState) string += chr;
+            switch (chr) {
+                case '"':
+                    // If stringState is true...
+                    if (stringState) {
+                        // Deleting string character at beginning of token index
+                        String string1 = new StringBuilder(string).deleteCharAt(0).toString();
+                        ArrayList<String> string_token = new ArrayList<>();
+                        string_token.add("String: " + string1);
+                        tokens.add(string_token);
+                        string = "";
+                        string_token = null;
+                        stringState = false;
+                    } else {
+                        stringState = true;
+                    } break;
+            }
+            // Build up our string
+            if (stringState) string += chr;
         }
 
-        System.out.println(string);
+        // To find keywords
+
         return tokens;
 
     }
 
     public static void main(String[]args) throws Exception{
-        System.out.println( tokeniser(openFile("test.lang")) );
+        System.out.println(tokeniser(openFile("test.lang")));
     }
 
 }
