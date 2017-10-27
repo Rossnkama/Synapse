@@ -28,7 +28,7 @@ public class Lexer {
     }
 
     // Turning the file we read into tokens
-    private static String tokeniser(String opened_file) {
+    private static List tokeniser(String opened_file) {
 
         List keyWords = new ArrayList<>();
         keyWords.add("out"); keyWords.add("if"); keyWords.add("def"); keyWords.add("for");
@@ -40,38 +40,25 @@ public class Lexer {
         for (int i = 0; i < opened_file.length(); i++) {
 
             builder += opened_file.charAt(i);
-
             char chr = opened_file.charAt(i);
 
             if (chr == '"') {
-                if (stringState == false) {
-
-                    stringState = true;
-
-                } else {
-                    // If stringState is true...
-                    string += chr;
+                // If stringState is true...
+                if (stringState) {
                     stringState = false;
-                    tokens.add(string); string = ""; builder = "";
-
+                } else {
+                    stringState = true;
                 }
-            }
-
-            if (keyWords.contains(builder)) {
-                 tokens.add(builder);
-                 builder = ""; // Resetting builder to nothing. This works because the builder is being built accumitively.
-            }
-
+            } if (stringState) string += chr;
         }
 
-        return "";
+        System.out.println(string);
+        return tokens;
 
     }
 
     public static void main(String[]args) throws Exception{
-
         System.out.println( tokeniser(openFile("test.lang")) );
-
     }
 
 }

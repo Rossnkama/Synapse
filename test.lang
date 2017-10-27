@@ -1,5 +1,6 @@
 if (name == name) {
     out "Hello world";
+    out "This is a test";
 } else {
     out 1 + 1;
 }
