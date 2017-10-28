@@ -4,11 +4,10 @@ import java.util.ArrayList;     import java.util.HashMap;   import java.util.Lis
 public class Lexer {
 
     private static List tokens = new ArrayList<>();
-
     private static String openFile(String path_to_file) throws Exception{
 
         // Initialising the string that returns out output value
-        String opened_file = "";
+        StringBuilder opened_file = new StringBuilder();
 
         // Initialising both the Buffered and File reader objects
         try(BufferedReader br = new BufferedReader(new FileReader(path_to_file))) {
@@ -17,15 +16,13 @@ public class Lexer {
             String line;
 
             // While the lines aren't nothing, add them to opened file
-            while ((line = br.readLine()) != null) opened_file += line;
+            while ((line = br.readLine()) != null) opened_file.append(line);
 
             // Exception handling
         } catch (IOException e) {
-
             System.out.println("File not Found");
             System.out.println(e);
-
-        } return opened_file;
+        } return opened_file.toString();
 
     }
 
@@ -38,7 +35,7 @@ public class Lexer {
         keyWords.put("Boolean", "False");       keyWords.put("Boolean", "True");    keyWords.put("else", "conditional");
         String builder = "";
         boolean stringState = false;
-        String string = "";
+        StringBuilder string = new StringBuilder();
 
         for (int i = 0; i < opened_file.length(); i++) {
             // Our reader which can identify the character at any time.
@@ -46,12 +43,11 @@ public class Lexer {
             if (chr == '"') {// If stringState is true...
                 if (stringState) {
                     // Deleting string character at beginning of token index
-                    String string1 = new StringBuilder(string).deleteCharAt(0).toString();
+                    String string1 = new StringBuilder(string.toString()).deleteCharAt(0).toString();
                     ArrayList<String> string_token = new ArrayList<>();
                     string_token.add("String: " + string1);
                     tokens.add(string_token);
-                    string = "";
-                    string_token = null;
+                    string = new StringBuilder();
                     stringState = false;
                 } else {
                     stringState = true;
@@ -60,7 +56,7 @@ public class Lexer {
 
             // Build up our string
             if (stringState) {
-                string += chr;
+                string.append(chr);
             } else {
                 builder += chr;
 
@@ -96,14 +92,11 @@ public class Lexer {
     }
 
     // To look for certain characters which aren't strings to tokenize
-    public static boolean patternMatcher(String valueName, String pattern, char item) {
+    private static void patternMatcher(String valueName, String pattern, char item) {
         ArrayList<String> tempArrayList = new ArrayList<>();
         if (pattern.contains(Character.toString(item))) {
             tempArrayList.add(valueName + ": " + Character.toString(item));
             tokens.add(tempArrayList);
-            return true;
-        } else {
-            return false;
         }
     }
 
